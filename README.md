@@ -102,7 +102,7 @@ Also, all of the files are in JavaDoc format.
 
 	// ...
 	
-	java.awt.File iniFile = new java.awt.File("Example.ini");
+	java.io.File iniFile = new java.io.File("Example.ini");
 	INIReader reader = new INIReader(iniFile);
 	INIFileWriter writer = new INIFileWriter(iniFile);
 	
