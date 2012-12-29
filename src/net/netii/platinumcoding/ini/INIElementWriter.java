@@ -80,4 +80,22 @@ public class INIElementWriter {
 			tempFile.renameTo(element.getINIFile());
 		} catch(IOException e) {}
 	}
+	
+	/**
+	 * Sets the element that the writer is modifying.
+	 * 
+	 * @param e 
+	 */
+	public void setElement(INIElement e) {
+		this.element = e;
+	}
+	
+	/**
+	 * Returns the current element that is being written to.
+	 * 
+	 * @return The element that is being written to the file
+	 */
+	public INIElement getElement() {
+		return this.element;
+	}
 }
