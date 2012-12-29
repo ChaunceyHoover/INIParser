@@ -88,25 +88,34 @@ public class INIFileWriter {
 			String string;
 			
 			boolean hasFoundCategory = false;
-			boolean hasWrittenElement = false;
+			boolean keyExists = false;
 			
 			while ((string = in.readLine()) != null) {
 				String newline = string;
 				
+				// Comment or blank line, so skip to next line.
+				if (string.equals("") || string.charAt(0) == ';' || string.charAt(0) == '#')
+					continue;
+				
 				if (!hasFoundCategory) {
-					if (string.equals("") || string.charAt(0) == ';' || string.charAt(0) == '#')
-						continue;
-					
+					// Line is a category, checking if it is the specified one...
 					if (string.charAt(0) == '[') {
 						String thisCategory = string.substring(1, string.length() - 1);
 						if (thisCategory.equals(element.getCategory()))
 							hasFoundCategory = true;
 					}
 				} else {
-					if (!hasWrittenElement) {
-						hasWrittenElement = true;
-						out.write(element.getKey() + '=' + element.getValue());
-						out.newLine();
+					// New category has been reached, stopping loop.
+					if (string.charAt(0) == '[')
+						break;
+					
+					// Checking if line is an element
+					if (string.contains("=")) {
+						int pos = string.indexOf("=");
+						String key = string.substring(0, pos);
+						
+						if (key.equals(element.getKey()))
+							keyExists = true;
 					}
 				}
 				
@@ -122,7 +131,7 @@ public class INIFileWriter {
 				// adding two new lines after a category at the end of the file,
 				// but this is just to save us any issues.
 				
-				if (!hasWrittenElement) {
+				if (!keyExists) {
 					out.write(element.getKey() + '=' + element.getValue());
 					out.newLine();
 				}
