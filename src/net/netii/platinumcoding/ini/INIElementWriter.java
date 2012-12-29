@@ -2,9 +2,14 @@ package net.netii.platinumcoding.ini;
 
 import java.io.*;
 
+/*
+ * TODO
+ * +	
+ */
+
 /**
  *
- * @author DealerNextDoor
+ * @author Dealer Next Door
  */
 public class INIElementWriter {
 	/**
@@ -40,6 +45,9 @@ public class INIElementWriter {
 			String string;
 			while ((string = in.readLine()) != null) {
 				String newline = string;
+				
+				if (string.equals("") || string.charAt(0) == ';' || string.charAt(0) == '#')
+					continue;
 				
 				// Checking if it has found the category that this element is in
 				if (!hasFoundCategory) {
