@@ -9,7 +9,7 @@ Although the class `INIElement` has a set method for all it's properties (`File 
 `String category`, `String key`, `Object value`), it does _NOT_ actually update the values in the file. 
 These methods should only be called when creating a new element for the `INIFileWriter`.
 
-Also, all of the files have 
+Also, all of the files are in JavaDoc format.
 
 ## How to use ##
 
