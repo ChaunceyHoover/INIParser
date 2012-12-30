@@ -1,8 +1,6 @@
 package net.netii.platinumcoding.ini;
 
 import java.io.*;
-import java.util.Scanner;
-
 /**
  *
  * @author Dealer Next Door
