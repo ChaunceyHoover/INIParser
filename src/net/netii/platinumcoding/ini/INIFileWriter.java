@@ -32,12 +32,10 @@ public class INIFileWriter {
 		// Checking to see if the file already contains the desired category
 		boolean containsCategory = false;
 		String fileContent = "";
-		String lastLine = "";
 		String string;
 		
 		try (BufferedReader in = new BufferedReader(new FileReader(iniFile))) {
 			while ( (string = in.readLine()) != null) {
-				lastLine = string;
 				fileContent += string;
 				fileContent += System.getProperty("line.separator");
 				
@@ -93,9 +91,10 @@ public class INIFileWriter {
 		
 		try(BufferedReader in = new BufferedReader(new FileReader(iniFile))) {
 			File temp = new File("temp.ini");
-			BufferedWriter out = new BufferedWriter(new FileWriter(temp));
+			BufferedWriter out = new BufferedWriter(new FileWriter(temp, true));
 			String string;
 			
+			boolean isInSameCategory = false;
 			boolean hasFoundCategory = false;
 			boolean keyExists = false;
 			
@@ -106,20 +105,31 @@ public class INIFileWriter {
 					// Line is a category, checking if it is the specified one...
 					if (!string.equals("") && string.charAt(0) == '[') {
 						String thisCategory = string.substring(1, string.length() - 1);
-						if (thisCategory.equals(element.getCategory()))
+						if (thisCategory.equals(element.getCategory())) {
 							hasFoundCategory = true;
+							isInSameCategory = true;
+						}
 					}
 				} else {
-					// New category has been reached, stopping loop.
-					if (!string.equals("") && string.charAt(0) == '[')
-						break;
+					// A blank line has been reached under this category, adding
+					// the element to the list.
+					if (string.equals("")) {
+						if (!keyExists) {
+							keyExists = true;
+							out.write(element.getKey() + '=' + element.getValue());
+							out.newLine();
+						}
+					} else
+						// A new category has started
+						if (string.charAt(0) == '[')
+							isInSameCategory = false;
 					
 					// Checking if line is an element
-					if (!string.equals("") && string.contains("=")) {
+					if (string.contains("=")) {
 						int pos = string.indexOf("=");
 						String key = string.substring(0, pos);
 						
-						if (key.equals(element.getKey()))
+						if (key.equals(element.getKey()) && isInSameCategory)
 							keyExists = true;
 					}
 				}
@@ -136,7 +146,7 @@ public class INIFileWriter {
 				// adding two new lines after a category at the end of the file,
 				// but this is just to save us any issues.
 				
-				if (!keyExists) {
+				if (!keyExists ) {
 					out.write(element.getKey() + '=' + element.getValue());
 					out.newLine();
 				}
