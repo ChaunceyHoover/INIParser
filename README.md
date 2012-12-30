@@ -9,6 +9,10 @@ Although the class `INIElement` has a set method for all it's properties (`File 
 `String category`, `String key`, `Object value`), it does _NOT_ actually update the values in the file. 
 These methods should only be called when creating a new element for the `INIFileWriter`.
 
+_IMPORTANT_
+The class `INIFileWriter` is used for *CREATING NEW ELEMENTS*, not for changing them! If you want to
+change an element's value, use the class `INIElementWriter`!
+
 Also, all of the files are in JavaDoc format.
 
 ## How to use ##
