@@ -3,7 +3,13 @@ package net.netii.platinumcoding.ini;
 import java.io.*;
 
 /**
- *
+ * This class is used to represent an element within an INI file.
+ * <br /><br />
+ * An important thing to remember when using the INIElement set methods is this:
+ * it does <b>NOT</b> write the changes to the file! The only time the set methods
+ * of this class should be called is when it is being prepared for an {@link INIElementWriter}
+ * to be written to a file.
+ * 
  * @author Dealer Next Door
  */
 public class INIElement {

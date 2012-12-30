@@ -2,13 +2,82 @@ package net.netii.platinumcoding.ini;
 
 import java.io.*;
 
-/*
- * TODO
- * +	
- */
-
 /**
- *
+ * This class is used for changing the value of an {@link INIElement} and saving
+ * it to a file.
+ * <br /><br />
+ * If you want to modify the values of an individual element, then you would just
+ * call the method {@link #setValue(Object)} after you set the element to be written
+ * to by either the constructor ({@link INIElementWriter(INIElement)}) or the
+ * set method ({@link #setElement(INIElement)}).
+ * <br /><br />
+ * To change the value of an element and have it saved to the file, you just call
+ * the set method and it is changed.
+ * <br /><br />
+ * The following text is content of the file "Example.ini", which is used in
+ * all of the examples:
+ * <br /><br />
+ * <pre>
+ * {@code 
+ * ; Window properties
+ * [Window]
+ * Width=640
+ * Height=480
+ * 
+ * ; Render properties
+ * [Properties]
+ * vSync=true
+ * DoubleBuffer=true
+ * }
+ * </pre>
+ * <pre>
+ * {@code
+ * // ...
+ * 
+ * // Creates a reader to get the INIElements
+ * INIReader reader = new INIReader(new java.io.File("Example.ini"));
+ * 
+ * // Gets the elements for modifying
+ * INIElement width = reader.get(0);
+ * INIElement height = reader.get(1);
+ * 
+ * // Creates an element writer
+ * INIElementWriter writer = new INIElementWriter(element);
+ * 
+ * // Proof of the value with a before-and-after
+ * System.out.println(element.getKey() + " = " + element.getValue());
+ * 
+ * // Changing the value
+ * writer.setValue(480);
+ * 
+ * // The after
+ * System.out.println(element.getKey() + " = " + element.getValue());
+ * 
+ * // Instead of having to instance a new INIElementWriter, which would also work,
+ * // you can use the .setElement(INIElement) method to change which element is
+ * // being written to.
+ * writer.setElement(height);
+ * 
+ * // More before-and-after
+ * System.out.println(height.getKey() + " = " + height.getValue());
+ * writer.setValue(640);
+ * System.out.println(height.getKey() + " = " + height.getValue());
+ * 
+ * // ...
+ * }
+ * </pre>
+ * 
+ * Which would output the following:
+ * 
+ * <pre>
+ * {@code 
+ * Width = 640
+ * Width = 480
+ * Height = 480
+ * Height = 640
+ * }
+ * </pre>
+ * 
  * @author Dealer Next Door
  */
 public class INIElementWriter {

@@ -2,7 +2,96 @@ package net.netii.platinumcoding.ini;
 
 import java.io.*;
 /**
- *
+ * This class is used for creating new categories and elements within a specific
+ * INI file. If you want to modify existing elements, see {@link INIElementWriter}.
+ * <br /><br />
+ * When you want to create an element or a category within an INI file, you use
+ * this class to do so. An example has been provided for every method of this class.
+ * <br /><br />
+ * The following text is content of the file "Example.ini", which is used in
+ * all of the examples:
+ * <br /><br />
+ * <pre>
+ * {@code 
+ * ; Window properties
+ * [Window]
+ * Width=640
+ * Height=480
+ * 
+ * ; Render properties
+ * [Properties]
+ * vSync=true
+ * DoubleBuffer=true
+ * }
+ * </pre>
+ * 
+ * If you wanted to add another category to the file, or add an element to a
+ * category, you would use the {@link #addCategory(String)} method to create a
+ * new category, and {@link #addElement(String, String, Object)} to create an
+ * element.
+ * <br /><br />
+ * <pre>
+ * {@code 
+ * // ...
+ * 
+ * // Initializes a writer
+ * INIFileWriter writer = new INIFileWriter(new java.io.File("Example.ini"));
+ * 
+ * // Used for adding a new element to the file
+ * INIElement element;	
+ * 
+ * // Successfully adds the new category "Color"
+ * writer.addCategory("Color");
+ * 
+ * // Does not add the category "Window" because it already exists
+ * writer.addCategory("Window");
+ * 
+ * // Creates a new element under Color (Text=Black)
+ * String category = "Color";
+ * String key = "Text";
+ * Object value = "Black";
+ * writer.addElement(category, key, value);
+ * 
+ * // Creates a new element that will be under Color, as Background=White
+ * String key2 = "Background";
+ * Object value2 = "White";
+ * element = new INIElement(writer.getINIFile(), category, key2, value2);
+ * 
+ * // ...
+ * }
+ * </pre>
+ * And the content of the Example.ini file is now:
+ * <br /><br />
+ * <pre>
+ * {@code
+ * ; Window properties
+ * [Window]
+ * Width=640
+ * Height=480
+ * 
+ * ; Render properties
+ * [Properties]
+ * vSync=true
+ * DoubleBuffer=true
+ * 
+ * [Color]
+ * Text=Black
+ * }
+ * </pre>
+ * But why is the Background=White in the file? Because the INIFileWriter never
+ * actually wrote it to the file. Just because you created an INIElement and set
+ * the file that it belongs to, does not mean that it will be in the file. For it
+ * to be successfully added to the file, it must be added via INIFileWriter.
+ * <br /><br />
+ * So, to fix the problem, just add the following line after the element is
+ * initialized:
+ * <br /><br />
+ * <pre>
+ * {@code 
+ * writer.addElement(element);
+ * }
+ * </pre>
+ * 
  * @author Dealer Next Door
  */
 public class INIFileWriter {
@@ -22,7 +111,8 @@ public class INIFileWriter {
 	}
 	
 	/**
-	 * Adds a category to the current INI file.
+	 * Adds a category to the current INI file. If the category already exists,
+	 * then the category will not be created.
 	 * 
 	 * @param category The category to be added to the file
 	 */
@@ -69,7 +159,9 @@ public class INIFileWriter {
 	}
 	
 	/**
-	 * Adds an element to the desired category.
+	 * Adds an element to the desired category. If the element already exists,
+	 * the element is NOT overwritten. Instead, nothing is done. If you want to
+	 * override a value, see {@link INIElementWriter#setValue(Object)}.
 	 * 
 	 * @param category	The desired category to add the element to
 	 * @param key		The key that will represent the element
@@ -80,7 +172,9 @@ public class INIFileWriter {
 	}
 	
 	/**
-	 * Adds an element to the desired category.
+	 * Adds an element to the desired category. If the element already exists,
+	 * it will not override the value. If you wish to change the value of an
+	 * element, see {@link INIElementWriter#setValue(Object)}
 	 * <i>Note: The element's INI file will be overwritten to the INIFileWriter's
 	 * INI file</i>
 	 * 
@@ -157,5 +251,14 @@ public class INIFileWriter {
 			element.getINIFile().delete();
 			temp.renameTo(element.getINIFile());
 		} catch(IOException e) {}
+	}
+	
+	/**
+	 * Gets the current INI file that is being written to.
+	 * 
+	 * @return The INI file being written to
+	 */
+	public File getINIFile() {
+		return this.iniFile;
 	}
 }

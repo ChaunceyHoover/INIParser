@@ -4,7 +4,79 @@ import java.io.*;
 import java.util.ArrayList;
 
 /**
- *
+ * This class is used for reading elements from an INI file.
+ * <br /><br />
+ * 
+ * The following text is content of the file "Example.ini", which is used in
+ * all of the examples:
+ * <br /><br />
+ * <pre>
+ * {@code 
+ * ; Window properties
+ * [Window]
+ * Width=640
+ * Height=480
+ * 
+ * ; Render properties
+ * [Properties]
+ * vSync=true
+ * DoubleBuffer=true
+ * }
+ * </pre>
+ * 
+ * If you wanted to get all of the element under a specific category, you would
+ * use the method {@link #getElements(String)}. This will return an 
+ * {@link ArrayList}<{@link INIElement}>, with each INIElement being the element
+ * under that specific category.
+ * <br /><br />
+ * <pre>
+ * {@code 
+ * // ...
+ * 
+ * INIReader reader = new INIReader(new java.io.File("Example.ini"));
+ * String category = "Window"
+ * 
+ * for (INIElement element : reader.getElements(category)) {
+ *	String key = element.getKey();
+ *	Object value = element.getValue();
+ *	
+ *	System.out.println(key + " = " + value.toString());
+ * }
+ * 
+ * // ...
+ * }
+ * </pre>
+ * 
+ * The output of the following snippet of code would be:
+ * <br /><br />
+ * <pre>
+ * {@code
+ * Width = 640
+ * Height = 480
+ * }
+ * </pre>
+ * 
+ * If you wanted to just simple check how many categories the file you are reading 
+ * has, which could serve as a quick way to check if a file has been modified or
+ * is out of date, then you would just simple use the method {@link #getCategoryCount()}.
+ * <br /><br />
+ * <pre>
+ * {@code
+ * INIReader reader = new INIReader(new java.io.File("Example.ini"));
+ * int totalCategories = reader.getCategoryCount();
+ * 
+ * System.out.println("Total categories in file: " + totalCategories);
+ * }
+ * </pre>
+ * 
+ * Which would output:
+ * 
+ * <pre>
+ * {@code 
+ * Total categories in file: 2
+ * }
+ * </pre>
+ * 
  * @author Dealer Next Door
  */
 public class INIReader {
@@ -118,16 +190,14 @@ public class INIReader {
 					}
 					
 					// Creating the element
-					INIElement element = new INIElement(this.iniFile, category, key, value);
+					INIElement element = new INIElement(this.iniFile, category, key, (Object)value);
 					elements.add(element);
 				}
 					
 			}
-		} catch(IOException e) {
-			
-		}
+		} catch(IOException e) {}
 		
-		return elements;
+		return (elements.size() > 0 ? elements : null);
 	}
 	
 	/**
