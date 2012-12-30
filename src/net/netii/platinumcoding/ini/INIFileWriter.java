@@ -1,6 +1,7 @@
 package net.netii.platinumcoding.ini;
 
 import java.io.*;
+import java.util.Scanner;
 
 /**
  *
@@ -32,17 +33,24 @@ public class INIFileWriter {
 		
 		// Checking to see if the file already contains the desired category
 		boolean containsCategory = false;
+		String fileContent = "";
+		String lastLine = "";
 		String string;
 		
 		try (BufferedReader in = new BufferedReader(new FileReader(iniFile))) {
 			while ( (string = in.readLine()) != null) {
+				lastLine = string;
+				fileContent += string;
+				fileContent += System.getProperty("line.separator");
+				
 				// Line is a comment or is empty, ignoring
-				if (string.equals("") || string.charAt(0) == ';' || string.charAt(0) == '#')
-					continue;
+				if (!string.equals(""))
+					if (string.charAt(0) == ';' || string.charAt(0) == '#')
+						continue;
 				
 				// Line is a category, checking if it is the category that is
 				// about to be created
-				if (string.charAt(0) == '[') {
+				if (!string.equals("") && string.charAt(0) == '[') {
 					String thisCategory = string.substring(1, string.length() - 1);
 					if (thisCategory.equals(category))
 						containsCategory = true;
@@ -53,7 +61,10 @@ public class INIFileWriter {
 		// The file does not contain the category, so appeanding it to the end
 		// of the file.
 		if (!containsCategory) {
-			try (BufferedWriter out = new BufferedWriter(new FileWriter(iniFile, true))) {
+			try (BufferedWriter out = new BufferedWriter(new FileWriter(iniFile))) {
+				// Overwritting the old file content with the correct content,
+				// which has a proper newline at the end of the file.
+				out.write(fileContent);
 				out.newLine();
 				out.write('[' + category + ']');
 				out.close();
@@ -93,24 +104,20 @@ public class INIFileWriter {
 			while ((string = in.readLine()) != null) {
 				String newline = string;
 				
-				// Comment or blank line, so skip to next line.
-				if (string.equals("") || string.charAt(0) == ';' || string.charAt(0) == '#')
-					continue;
-				
 				if (!hasFoundCategory) {
 					// Line is a category, checking if it is the specified one...
-					if (string.charAt(0) == '[') {
+					if (!string.equals("") && string.charAt(0) == '[') {
 						String thisCategory = string.substring(1, string.length() - 1);
 						if (thisCategory.equals(element.getCategory()))
 							hasFoundCategory = true;
 					}
 				} else {
 					// New category has been reached, stopping loop.
-					if (string.charAt(0) == '[')
+					if (!string.equals("") && string.charAt(0) == '[')
 						break;
 					
 					// Checking if line is an element
-					if (string.contains("=")) {
+					if (!string.equals("") && string.contains("=")) {
 						int pos = string.indexOf("=");
 						String key = string.substring(0, pos);
 						
