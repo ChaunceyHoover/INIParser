@@ -177,12 +177,12 @@ public class INIReader {
 					
 					// A new category has been reached, therefore the reading should
 					// be stopped
-					if (string.charAt(0) == '[')
+					if (!string.equals("") && string.charAt(0) == '[')
 						break;
 					
 					// Breaking apart the line from the '=' character
 					for (int i = 0; i < string.length(); i++) {
-						if (string.charAt(i) == '=') {
+						if (!string.equals("") && string.charAt(i) == '=') {
 							key = string.substring(0, i);
 							value = string.substring(i + 1);
 							break;

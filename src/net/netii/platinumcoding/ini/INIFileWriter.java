@@ -122,7 +122,7 @@ public class INIFileWriter {
 		// Checking to see if the file already contains the desired category
 		boolean containsCategory = false;
 		String fileContent = "";
-		String string;
+		String string = "";
 		
 		try (BufferedReader in = new BufferedReader(new FileReader(iniFile))) {
 			while ( (string = in.readLine()) != null) {
@@ -130,16 +130,17 @@ public class INIFileWriter {
 				fileContent += System.getProperty("line.separator");
 				
 				// Line is a comment or is empty, ignoring
-				if (!string.equals(""))
+				if (!string.equals("")) {
 					if (string.charAt(0) == ';' || string.charAt(0) == '#')
 						continue;
-				
-				// Line is a category, checking if it is the category that is
-				// about to be created
-				if (!string.equals("") && string.charAt(0) == '[') {
-					String thisCategory = string.substring(1, string.length() - 1);
-					if (thisCategory.equals(category))
-						containsCategory = true;
+
+					// Line is a category, checking if it is the category that is
+					// about to be created
+					if (string.charAt(0) == '[') {
+						String thisCategory = string.substring(1, string.length() - 1);
+						if (thisCategory.equals(category))
+							containsCategory = true;
+					}
 				}
 			}
 		} catch (IOException e) {}
@@ -151,7 +152,10 @@ public class INIFileWriter {
 				// Overwritting the old file content with the correct content,
 				// which has a proper newline at the end of the file.
 				out.write(fileContent);
-				out.newLine();
+				
+				if (fileContent.length() != 0)
+					out.newLine();
+				
 				out.write('[' + category + ']');
 				out.close();
 			} catch (IOException e) {}
