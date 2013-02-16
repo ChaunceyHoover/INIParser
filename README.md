@@ -58,7 +58,7 @@ Also, all of the files are in JavaDoc format.
 	INIReader reader = new INIReader(iniFile);
 	
 	int totalCategories = reader.getCategoryCount();
-	System.out.println("Total number of categories: " + reader);
+	System.out.println("Total number of categories: " + totalCategories);
 	
 	// ...
 	
@@ -144,6 +144,7 @@ Also, all of the files are in JavaDoc format.
 	[Properties]
 	vSync=true
 	DoubleBuffer=true
+	
 	[Example]
 	One=1
 	Two=2
