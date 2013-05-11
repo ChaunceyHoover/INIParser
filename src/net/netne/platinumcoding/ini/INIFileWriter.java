@@ -1,4 +1,4 @@
-package net.netii.platinumcoding.ini;
+package net.netne.platinumcoding.ini;
 
 import java.io.*;
 /**
@@ -117,8 +117,6 @@ public class INIFileWriter {
 	 * @param category The category to be added to the file
 	 */
 	public void addCategory(String category) {
-		if (iniFile == null) return;
-		
 		// Checking to see if the file already contains the desired category
 		boolean containsCategory = false;
 		String fileContent = "";
@@ -129,8 +127,8 @@ public class INIFileWriter {
 				fileContent += string;
 				fileContent += System.getProperty("line.separator");
 				
-				// Line is a comment or is empty, ignoring
 				if (!string.equals("")) {
+					// Line is a comment, ignoring
 					if (string.charAt(0) == ';' || string.charAt(0) == '#')
 						continue;
 
@@ -143,7 +141,9 @@ public class INIFileWriter {
 					}
 				}
 			}
-		} catch (IOException e) {}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		// The file does not contain the category, so appeanding it to the end
 		// of the file.
@@ -158,7 +158,9 @@ public class INIFileWriter {
 				
 				out.write('[' + category + ']');
 				out.close();
-			} catch (IOException e) {}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -254,7 +256,56 @@ public class INIFileWriter {
 			
 			element.getINIFile().delete();
 			temp.renameTo(element.getINIFile());
-		} catch(IOException e) {}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Adds a comment to the line directly above the specified category.
+	 *
+	 * NOTE: It does not append new lines to the comment, so comment wisely. (Must use '\n')
+	 * i.e. addComment("Category", "Hello world\nThese are two separate lines.") will result in
+	 *
+	 * ...
+	 * # Hello World
+	 * # These are two separate comment
+	 * [Category]
+	 * ...
+	 * @param category 	The category to append the comment above
+	 * @param comment 	The comment to be added above the specified category
+	 */
+	public void addComment(String category, Object comment) {
+		boolean hasCategory = false;
+		String fileContent 	= "";
+		String currentLine;
+		
+		try (BufferedReader in = new BufferedReader(new FileReader(iniFile))) {
+			while ((currentLine = in.readLine()) != null) {
+				// Instead of appending current line to fileContent before knowing the line is not a category,
+				// check to see if the line is the desired category, append comment, then add the currentLine.
+				
+				if (!currentLine.equals("")) {
+					// Line is not a comment
+					if (currentLine.charAt(0) != '#' || currentLine.charAt(0) != ';') {
+						if (currentLine.charAt(0) == '[') {
+							String thisCategory = currentLine.substring(1, currentLine.length() - 1);
+							if (thisCategory.equals(category)) {
+								String cmt = comment.toString();
+								cmt.replaceAll("\n", System.getProperty("file.separator") + "# ");
+								fileContent += cmt;
+								fileContent += System.getProperty("file.separator");
+							}
+						}
+					}
+				}
+				
+				fileContent += currentLine;
+				fileContent += System.getProperty("file.separator");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

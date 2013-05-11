@@ -1,4 +1,4 @@
-package net.netii.platinumcoding.ini;
+package net.netne.platinumcoding.ini;
 
 import java.io.*;
 

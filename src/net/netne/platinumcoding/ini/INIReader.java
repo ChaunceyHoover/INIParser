@@ -1,4 +1,4 @@
-package net.netii.platinumcoding.ini;
+package net.netne.platinumcoding.ini;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -131,7 +131,9 @@ public class INIReader {
 			}
 			
 			reader.close();
-		} catch (IOException ex) {}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 		
 		return sections;
 	}
@@ -195,7 +197,9 @@ public class INIReader {
 				}
 					
 			}
-		} catch(IOException e) {}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 		
 		return (elements.size() > 0 ? elements : null);
 	}

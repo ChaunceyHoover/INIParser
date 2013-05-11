@@ -1,4 +1,4 @@
-package net.netii.platinumcoding.ini;
+package net.netne.platinumcoding.ini;
 
 import java.io.*;
 
@@ -147,7 +147,9 @@ public class INIElementWriter {
 			
 			element.getINIFile().delete();
 			tempFile.renameTo(element.getINIFile());
-		} catch(IOException e) {}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
