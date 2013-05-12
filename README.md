@@ -19,7 +19,7 @@ Also, all of the files are in JavaDoc format.
 
 *Content of Example.ini for all examples.*
 
-	; Defining window properties
+    ; Defining window properties
 	[Window]
 	Width=640
 	Height=480
@@ -141,6 +141,34 @@ Also, all of the files are in JavaDoc format.
 	Height=480
 	
 	; Defining render properties
+	[Properties]
+	vSync=true
+	DoubleBuffer=true
+	
+	[Example]
+	One=1
+	Two=2
+
+### Adding a comment above a category ###
+
+    // ...
+    
+    java.io.File iniFile = new java.io.File("Example.ini");
+    INIFileWriter writer = new INIFileWriter(iniFile);
+    
+    writer.addComment("Properties", "NOTE: Only accepted values are `true` and `false`");
+    
+    // ...
+
+##### Example.ini #####
+
+    ; Defining window properties
+	[Window]
+	Width=640
+	Height=480
+	
+	; Defining render properties
+    # NOTE: Only accepted values are `true` and `false`
 	[Properties]
 	vSync=true
 	DoubleBuffer=true
