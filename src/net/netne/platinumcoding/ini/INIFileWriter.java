@@ -120,7 +120,7 @@ public class INIFileWriter {
 		// Checking to see if the file already contains the desired category
 		boolean containsCategory = false;
 		String fileContent = "";
-		String string = "";
+		String string;
 		
 		try (BufferedReader in = new BufferedReader(new FileReader(iniFile))) {
 			while ( (string = in.readLine()) != null) {
@@ -190,7 +190,7 @@ public class INIFileWriter {
 		element.setINIFile(this.iniFile);
 		
 		try(BufferedReader in = new BufferedReader(new FileReader(iniFile))) {
-			File temp = new File("temp.ini");
+			File temp = new File(".temp.ini");
 			BufferedWriter out = new BufferedWriter(new FileWriter(temp, true));
 			String string;
 			
@@ -264,45 +264,47 @@ public class INIFileWriter {
 	/**
 	 * Adds a comment to the line directly above the specified category.
 	 *
-	 * NOTE: It does not append new lines to the comment, so comment wisely. (Must use '\n')
-	 * i.e. addComment("Category", "Hello world\nThese are two separate lines.") will result in
-	 *
-	 * ...
-	 * # Hello World
-	 * # These are two separate comment
-	 * [Category]
-	 * ...
+	 * NOTE: It does not append new lines to the comment, so comment wisely.
+	 * 
 	 * @param category 	The category to append the comment above
 	 * @param comment 	The comment to be added above the specified category
 	 */
 	public void addComment(String category, Object comment) {
+		File temp = new File(".temp.ini");
+		
 		boolean hasCategory = false;
-		String fileContent 	= "";
 		String currentLine;
 		
 		try (BufferedReader in = new BufferedReader(new FileReader(iniFile))) {
+			BufferedWriter out = new BufferedWriter(new FileWriter(temp));
+			
 			while ((currentLine = in.readLine()) != null) {
 				// Instead of appending current line to fileContent before knowing the line is not a category,
 				// check to see if the line is the desired category, append comment, then add the currentLine.
 				
 				if (!currentLine.equals("")) {
 					// Line is not a comment
-					if (currentLine.charAt(0) != '#' || currentLine.charAt(0) != ';') {
-						if (currentLine.charAt(0) == '[') {
-							String thisCategory = currentLine.substring(1, currentLine.length() - 1);
-							if (thisCategory.equals(category)) {
-								String cmt = comment.toString();
-								cmt.replaceAll("\n", System.getProperty("file.separator") + "# ");
-								fileContent += cmt;
-								fileContent += System.getProperty("file.separator");
-							}
+					if (currentLine.charAt(0) == '[') {
+						String thisCategory = currentLine.substring(1, currentLine.length() - 1);
+						if (thisCategory.equals(category)) {
+							String cmt = comment.toString();
+							out.write("# " + cmt);
+							out.write(System.getProperty("line.separator"));
 						}
 					}
 				}
 				
-				fileContent += currentLine;
-				fileContent += System.getProperty("file.separator");
+				System.out.println(currentLine);
+				out.write(currentLine);
+				out.write(System.getProperty("line.separator"));
 			}
+			
+			out.flush();
+			out.close();
+			in.close();
+			
+			this.getINIFile().delete();
+			temp.renameTo(this.iniFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
